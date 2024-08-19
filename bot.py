@@ -196,6 +196,23 @@ async def work(ctx):
         await save_player(user_id, player_data)
         await ctx.send(f"{ctx.author.mention}, du hast gearbeitet und insgesamt {earnings:.2f} verdient! Dein aktuelles Guthaben beträgt {player_data['balance']:.2f}.")
 
+
+@bot.command()
+async def bail(ctx):
+    user_id = ctx.author.id
+    player_data = await load_player(user_id)
+    
+    if player_data:
+        check_jail(player_data)
+        if player_data['jailed'] > 0 and player_data['balance'] > 1500:
+            player_data['balance'] -= 1500
+            player_daya['jailed']  = 0
+            await ctx.send(f"{ctx.author.mention} du hast dich aus dem Gefängnis freigekauft! Deine jail time beträgt jetzt {player_data['jailed']}")
+            return
+        else:
+            await ctx.send(f"{ctx.author.mention} du bist nicht im Gefängnis und kannst dich auch nicht freikaufen. Das ist doch irgendwie klar du IDIOT!!! Ganz ehrlich, wie kann man so DUMM sein?")
+            return
+
 @bot.command()
 async def steal(ctx, target: discord.Member = None):
     user_id = ctx.author.id
@@ -399,6 +416,7 @@ async def commands_command(ctx):
     `!level` - Zeigt dein aktuelles Level und deine XP an.
     `!jobs` - Zeigt eine Liste der verfügbaren Jobs an.
     `!getjob <Jobname>` - Wähle einen Job, den du haben möchtest.
+    `!bail` - Kauf dich aus dem Gefängnis für 1500
     """
     await ctx.send(help_text)
 
@@ -458,4 +476,4 @@ async def on_ready():
     lottery_event.start()
     print(f'Bot ist bereit und eingeloggt als {bot.user}')
 
-bot.run('MTI3MjkxNDEzMTIwODM3NjMzMQ.GmIpE6.zuUwQI24xqwWTut4DfNhzbmvKlt5mECRmok6FQ')
+bot.run('INSERT_API_KEY_HERE')
