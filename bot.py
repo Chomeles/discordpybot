@@ -204,7 +204,7 @@ async def bail(ctx):
     
     if player_data:
         check_jail(player_data)
-        if player_data['jailed'] > 0 and player_data['balance'] > 1500:
+        if player_data['jailed'] > 0 and player_data['balance'] >= 1500:
             player_data['balance'] -= 1500
             player_daya['jailed']  = 0
             await ctx.send(f"{ctx.author.mention} du hast dich aus dem Gefängnis freigekauft! Deine jail time beträgt jetzt {player_data['jailed']}")
@@ -212,6 +212,27 @@ async def bail(ctx):
         else:
             await ctx.send(f"{ctx.author.mention} du bist nicht im Gefängnis und kannst dich auch nicht freikaufen. Das ist doch irgendwie klar du IDIOT!!! Ganz ehrlich, wie kann man so DUMM sein?")
             return
+
+@bot.command()
+async def gift(ctx, target: discord.Member = None, ammount: int):
+    user_id = ctx.author.id
+    if target is None or target.id == user_id:
+        await ctx.send(f"{ctx.author.mention} du musst einen anderen Spieler angeben, dem du Geld schicken möchtest.")
+        return
+
+    target_id = target.id
+    player_data = await load_player(user_id)
+    target_data = await load_player(target_id)
+    
+    if player_data and target_data:
+        check_jail(player_data)
+        if player_data['jailed'] > 0:
+            await ctx.send(f"{ctx.author.mention} du bist im Gefängnis und kannst nichts verschenken! Du musst noch {player_data['jailed']} Runde(n) warten.")
+            return
+    if player_data['balance'] >= ammount: 
+        target_data['balance'] += ammount
+        player_data['balance'] -= ammount 
+        return
 
 @bot.command()
 async def steal(ctx, target: discord.Member = None):
@@ -412,6 +433,7 @@ async def commands_command(ctx):
     `!wheel <Einsatz>` - Drehe das Glücksrad mit einem Einsatz für eine Chance auf einen Gewinn.
     `!daily` - Erhalte deine tägliche Belohnung (einmal alle 24 Stunden).
     `!balance` oder `!bal` - Zeigt dein aktuelles Guthaben an.
+    `!gift` @Benutzer - sende einem Spieler Geld.
     `!levelup` - Lerne, um XP zu verdienen und im Level aufzusteigen.
     `!level` - Zeigt dein aktuelles Level und deine XP an.
     `!jobs` - Zeigt eine Liste der verfügbaren Jobs an.
