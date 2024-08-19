@@ -214,7 +214,7 @@ async def bail(ctx):
             return
 
 @bot.command()
-async def gift(ctx, target: discord.Member = None, ammount: int):
+async def gift(ctx, ammount: int, target: discord.Member = None):
     user_id = ctx.author.id
     if target is None or target.id == user_id:
         await ctx.send(f"{ctx.author.mention} du musst einen anderen Spieler angeben, dem du Geld schicken möchtest.")
