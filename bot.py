@@ -458,4 +458,4 @@ async def on_ready():
     lottery_event.start()
     print(f'Bot ist bereit und eingeloggt als {bot.user}')
 
-bot.run('MTI3MjkxNDEzMTIwODM3NjMzMQ.GmIpE6.zuUwQI24xqwWTut4DfNhzbmvKlt5mECRmok6FQ')
+bot.run('INSERT_API_KEY_HERE')
