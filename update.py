@@ -4,7 +4,7 @@ import subprocess
 # Step 1: Git pull from the given URL
 def git_pull(repo_url):
     try:
-        subprocess.run(['git', 'clone', repo_url], check=True)
+        subprocess.run(['git', 'pull', repo_url], check=True)
         print(f"Successfully cloned the repository from {repo_url}")
     except subprocess.CalledProcessError as e:
         print(f"Failed to clone the repository: {e}")
