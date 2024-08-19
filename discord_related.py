@@ -348,11 +348,11 @@ async def lottery_event():
                 user = bot.get_user(winner_id)
                 if user:
                     await user.send(f"Glückwunsch {user.mention}! Du hast die Lotterie gewonnen und {jackpot} erhalten. Dein neues Guthaben beträgt {player_data['balance']}.")
-            await databank.update_lottery_jackpot(LOTTERY_JACKPOT_RESET)  # Reset the jackpot to 50
+            await databank.update_lottery_jackpot(general.LOTTERY_JACKPOT_RESET)  # Reset the jackpot to 50
         else:
-            new_jackpot = jackpot * LOTTERY_JACKPOT_MULTIPLIER
+            new_jackpot = jackpot * general.LOTTERY_JACKPOT_MULTIPLIER
             await databank.update_lottery_jackpot(new_jackpot)
-            await bot.get_channel(your_channel_id_here).send(f"Leider hat niemand die Lotterie gewonnen. Der Jackpot steigt auf {new_jackpot:.2f} für das nächste Event!")
+            await bot.get_channel(1275206295280029771).send(f"Leider hat niemand die Lotterie gewonnen. Der Jackpot steigt auf {new_jackpot:.2f} für das nächste Event!")   # channel id needs to be changed TODO
 
 @tasks.loop(minutes=random.randint(5, 60))
 async def random_rewards():
