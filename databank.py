@@ -1,4 +1,5 @@
 import aiosqlite
+import general
 
 async def ensure_db_structure():
     async with aiosqlite.connect('../game.db') as conn:
@@ -51,7 +52,7 @@ async def get_lottery_jackpot():
     async with aiosqlite.connect('../game.db') as conn:
         async with conn.execute("SELECT jackpot FROM lottery WHERE id=1") as cursor:
             row = await cursor.fetchone()
-            return row[0] if row else LOTTERY_JACKPOT_RESET
+            return row[0] if row else general.LOTTERY_JACKPOT_RESET
 
 async def update_lottery_jackpot(new_jackpot):
     async with aiosqlite.connect('../game.db') as conn:
