@@ -13,7 +13,7 @@ def git_pull(repo_url):
 
 # Step 2: Ask for API key
 def get_api_key():
-    return input("Please enter your API key: ")
+    return input("Please enter your discord-bot-key: ")
 
 # Step 3: Write to bot_run.py
 def write_bot_run_file(api_key):
@@ -29,7 +29,7 @@ discord_related.bot.run('{api_key}')
 # Main function to execute the steps
 def main():
     repo_url = "https://github.com/Chomeles/discordpybot.git"
-    
+    subprocess.run(['rm', 'bot_run.py'])
     if git_pull(repo_url):
         api_key = get_api_key()
         write_bot_run_file(api_key)
