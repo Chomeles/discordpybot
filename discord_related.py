@@ -6,6 +6,7 @@ import math
 import general
 import databank
 import aiosqlite
+import channels
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -107,7 +108,7 @@ async def gift(ctx, ammount: int, target: discord.Member = None):
             await ctx.send(f"{ctx.author.mention} du bist im Gefängnis und kannst nichts verschenken! Du musst noch {player_data['jailed']} Runde(n) warten.")
             return
     if player_data['balance'] >= ammount: 
-        target_data['balance'] += ammount
+        target_data['balance'] += int(ammount - (amount * 0.03))
         player_data['balance'] -= ammount 
         await databank.save_player(target_id, target_data)
         await databank.save_player(user_id, player_data)
@@ -144,7 +145,7 @@ async def steal(ctx, target: discord.Member = None):
             player_data['jail_time'] = time.time()
             await ctx.send(f"{ctx.author.mention} wurde beim Stehlen erwischt und hat {lost_amount} verloren! Du bist für {JAIL_TIME} Runden (Stunden) im Gefängnis.")
         else:
-            stolen_amount = random.randint(10, 30)
+            stolen_amount = (target_data['balance'] * min(0.2, player_data['level'] * 0.02))
             if target_data['balance'] < stolen_amount:
                 stolen_amount = target_data['balance']
 
@@ -212,7 +213,7 @@ async def daily(ctx):
         if not await general.check_action_limit(ctx, player_data, 1):
             return
 
-        player_data['balance'] += 10
+        player_data['balance'] += 10 * player_data['level']
         player_data['last_daily'] = current_time
         player_data['actions'].append(time.time())
         await databank.save_player(user_id, player_data)
@@ -246,6 +247,13 @@ async def balance(ctx):
     player_data = await databank.load_player(user_id)
     if player_data:
         await ctx.send(f"{ctx.author.mention}, dein aktuelles Guthaben beträgt {player_data['balance']}.")
+
+@bot.command()
+async def actions(ctx):
+    user_id = ctx.author.id
+    player_data = await databank.load_player(user_id)
+    if player_data:
+        await ctx.send(f"{ctx.author.mention} du hast noch {general.ACTION_LIMIT - len(player_data['actions'])} Aktion(en) übrig diese Runde")
 
 @bot.command()
 async def level(ctx):
@@ -283,8 +291,8 @@ async def getjob(ctx, job_name: str):
     user_id = ctx.author.id
     player_data = await databank.load_player(user_id)
     if player_data:
-        if player_data['level'] < 10:
-            await ctx.send(f"{ctx.author.mention}, du musst Level 10 erreichen, bevor du einen Job wählen kannst.")
+        if player_data['level'] < 5:
+            await ctx.send(f"{ctx.author.mention}, du musst Level 5 erreichen, bevor du einen Job wählen kannst.")
             return
 
         if job_name not in JOBS:
@@ -308,16 +316,17 @@ async def commands_command(ctx):
 
     `!join` - Tritt dem Spiel bei.
     `!work` - Arbeite, um Geld zu verdienen.
-    `!steal @Benutzer` - Versuche, von einem anderen Spieler zu stehlen.
+    `!steal @Benutzer` - Versuche, von einem anderen Spieler zu stehlen. Je höher dein Level desto mehr kannst du stehlen.
     `!wheel <Einsatz>` - Drehe das Glücksrad mit einem Einsatz für eine Chance auf einen Gewinn.
     `!daily` - Erhalte deine tägliche Belohnung (einmal alle 24 Stunden).
     `!balance` oder `!bal` - Zeigt dein aktuelles Guthaben an.
-    `!gift <amount> @Benutzer` - sende einem Spieler Geld.
+    `!gift <amount> @Benutzer` - Sende einem Spieler Geld.  Eine Gebühr von 3 Prozent wird abgezogen
     `!levelup` - Lerne, um XP zu verdienen und im Level aufzusteigen.
     `!level` - Zeigt dein aktuelles Level und deine XP an.
     `!jobs` - Zeigt eine Liste der verfügbaren Jobs an.
     `!getjob <Jobname>` - Wähle einen Job, den du haben möchtest.
-    `!bail` - Kauf dich aus dem Gefängnis für 1500
+    `!bail` - Kauf dich aus dem Gefängnis für 1500.
+    `!actions` - Zeigt wie viele Aktionen du noch übrig hast für diese Runde.
     """
     await ctx.send(help_text)
 
@@ -352,7 +361,7 @@ async def lottery_event():
         else:
             new_jackpot = jackpot * general.LOTTERY_JACKPOT_MULTIPLIER
             await databank.update_lottery_jackpot(new_jackpot)
-            await bot.get_channel(1275206295280029771).send(f"Leider hat niemand die Lotterie gewonnen. Der Jackpot steigt auf {new_jackpot:.2f} für das nächste Event!")   # channel id needs to be changed TODO
+            await bot.get_channel(channels.ANOUNCEMENT_CHANNEL).send(f"Leider hat niemand die Lotterie gewonnen. Der Jackpot steigt auf {new_jackpot:.2f} für das nächste Event!")   # channel id needs to be changed TODO
 
 @tasks.loop(minutes=random.randint(5, 60))
 async def random_rewards():

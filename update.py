@@ -30,6 +30,7 @@ discord_related.bot.run('{api_key}')
 def main():
     repo_url = "https://github.com/Chomeles/discordpybot.git"
     subprocess.run(['rm', 'bot_run.py'])
+    subprocess.run(['rm', 'channels.py'])
     if git_pull(repo_url):
         api_key = get_api_key()
         write_bot_run_file(api_key)
