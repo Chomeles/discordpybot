@@ -3,8 +3,9 @@ This is a discord bot for a simple life simulation game
 
 # Installation
 1. git clone this repository
-2. cd into the cloned repository: `cd discordpybot`
-3. run the `update.py` script and input your discord bot key when asked for it
+2. execute `pip install discord aiosqlite
+3. cd into the cloned repository: `cd discordpybot`
+4. run the `update.py` script and input your discord bot key when asked for it
 
 # Updating
 1. run the `update.py` script
