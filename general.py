@@ -1,4 +1,5 @@
 import math
+import time
 
 ACTION_LIMIT = 12
 DAILY_REWARD_INTERVAL = 86400  # 24 Stunden in Sekunden

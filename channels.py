@@ -1,0 +1,1 @@
+ANOUNCEMENT_CHANNEL = 12345678  #replace with actual channel id
