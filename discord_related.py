@@ -141,9 +141,9 @@ async def steal(ctx, target: discord.Member = None):
         if random.random() < job_info["jail_chance"]:
             lost_amount = random.randint(10, 20)
             player_data['balance'] -= lost_amount
-            player_data['jailed'] = JAIL_TIME
+            player_data['jailed'] = general.JAIL_TIME
             player_data['jail_time'] = time.time()
-            await ctx.send(f"{ctx.author.mention} wurde beim Stehlen erwischt und hat {lost_amount} verloren! Du bist für {JAIL_TIME} Runden (Stunden) im Gefängnis.")
+            await ctx.send(f"{ctx.author.mention} wurde beim Stehlen erwischt und hat {lost_amount} verloren! Du bist für {general.JAIL_TIME} Runden (Stunden) im Gefängnis.")
         else:
             stolen_amount = (target_data['balance'] * min(0.2, player_data['level'] * 0.02))
             if target_data['balance'] < stolen_amount:
